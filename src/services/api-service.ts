@@ -10,7 +10,7 @@ apiService.interceptors.response.use(
   (response) => response.data,
   ({response}) => {
     throw {
-      messages: response?.data?.messages || 'Desculpe, não consegui me conectar com a nuvem.',
+      messages: response?.data?.messages || ['Desculpe, não consegui me conectar com a nuvem.'],
       path: response?.data?.path,
     };
   },

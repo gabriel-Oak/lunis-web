@@ -2,9 +2,8 @@ import { Html, Head, Main, NextScript } from 'next/document'
 import { FC } from 'react';
 
 const Document: FC = () => (
-  <Html>
+  <Html lang="pt-BR">
     <Head>
-      <title>Lunis</title>
       <meta name="description" content="lunis assistant" />
       <link rel="icon" href="/favicon.ico" />
       <link
