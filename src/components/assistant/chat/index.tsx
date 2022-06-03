@@ -1,10 +1,13 @@
-import { FC, MutableRefObject } from 'react';
+import { FC, MutableRefObject, useLayoutEffect } from 'react';
 import { useAssistant } from '../AssistantContext';
 import TextBox from '../text-box';
 import { ChantContainer, DialogueContainer, ParagraphContainer, Row, TextBoxContainer } from './styles';
 
 const Chat: FC = () => {
-  const { entries, containerRef } = useAssistant();
+  const { entries, containerRef, scrollChat } = useAssistant();
+
+
+  useLayoutEffect(scrollChat, [entries]);
 
   return (
     <ChantContainer

@@ -35,7 +35,7 @@ export const AssistantProvider: FC<{ children: JSX.Element }> = ({ children }) =
     current.scrollBy({ behavior: 'smooth', top: scrollDistance });
   }
 
-  const { speak, voices, cancel } = useSpeechSynthesis({ onEnd: scrollChat });
+  const { speak, voices, cancel } = useSpeechSynthesis();
 
   const voice = useMemo(
     () => voices
