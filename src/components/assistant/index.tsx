@@ -1,5 +1,4 @@
-import { Button } from '@mui/material';
-import { FC, MutableRefObject } from 'react';
+import { FC } from 'react';
 import { useAssistant, withAssistant } from './AssistantContext';
 import Chat from './chat';
 import { StartButton } from './styles';

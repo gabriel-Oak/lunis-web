@@ -17,18 +17,22 @@ export const Row = styled('section', config)`
   justify-content: ${(props: { isUser: boolean }) => props.isUser && 'flex-end'};
 `;
 
-export const DialogueContainer = styled('div', config)`  
+export const DialogueContainer = styled('div', config)<{isUser: boolean}>(({ theme, isUser }) => `  
   border-radius: 8px;
   padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background-color: ${(props: { isUser: boolean }) => props.isUser
+  background-color: ${isUser
     ? '#0b54ff'
     : '#e1e1e1'};
-  color:  ${(props: { isUser: boolean }) => props.isUser && 'white'};
+  color:  ${isUser && 'white'};
   max-width: 60%;
-`;
+
+  ${theme.breakpoints.down('sm')} {
+    max-width: 80%;
+  }
+`);
 
 export const ParagraphContainer = styled('p')`
   margin: 0;

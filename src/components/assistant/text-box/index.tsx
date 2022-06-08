@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react';
+import { ChangeEvent, ChangeEventHandler, FC, useRef, useState } from 'react';
 import { useAssistant } from '../AssistantContext';
 import SendIcon from '@mui/icons-material/Send';
 import { TextArea, TextBoxContainer } from './styles';
@@ -17,13 +17,19 @@ const TextBox: FC = () => {
     textRef?.current?.focus();
   }
 
+  const handleChange = ({ target, nativeEvent }: any) => {
+    if (nativeEvent.inputType === 'insertLineBreak') 
+      return submitText();
+    setText(target.value);
+  }
+
   return (
     <TextBoxContainer>
       <TextArea
         ref={textRef}
         autoCapitalize="sentences"
         value={text}
-        onChange={({ target }) => setText(target.value)}
+        onChange={handleChange}
       />
 
       <IconButton onClick={submitText}>

@@ -1,22 +1,24 @@
 import { TextareaAutosize } from '@mui/base';
-import { IconButton } from '@mui/material';
 import { styled } from '@mui/system';
-import SendIcon from '@mui/icons-material/Send';
 
-export const TextBoxContainer = styled('div')`
+export const TextBoxContainer = styled('div')(({ theme }) => `
   position: fixed;
   bottom: 16px;
   left: 50%;
   transform: translate(-50%, 0);
   background: #aaaaaa;
-  width: 100%;
   border-radius: 30px;
   padding: 8px 22px;
   max-width: 600px;
   display: flex;
   gap: 16px;
   align-items: center;
-`;
+  width: 100%;
+
+  ${theme.breakpoints.down('sm')} {
+    width: calc(100% - 32px);
+  }
+`);
 
 export const TextArea = styled(TextareaAutosize)`
   resize: none;
