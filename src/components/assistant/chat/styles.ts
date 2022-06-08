@@ -33,17 +33,3 @@ export const DialogueContainer = styled('div', config)`
 export const ParagraphContainer = styled('p')`
   margin: 0;
 `;
-
-export const TextBoxContainer = styled('div')`
-  position: absolute;
-  background: ;
-  bottom: 16px;
-  left: 50%;
-  transform: translate(-50%, 0);
-  background: white;
-  min-height: 60px;
-  width: 100%;
-  border-radius: 30px;
-  padding: 8px 16px;
-  max-width: 600px;
-`;
