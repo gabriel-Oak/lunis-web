@@ -1,5 +1,7 @@
 import { TextareaAutosize } from '@mui/base';
-import { styled } from '@mui/system';
+import { IconButton } from '@mui/material';
+import { styled, keyframes } from '@mui/system';
+import MicIcon from '@mui/icons-material/Mic';
 
 export const TextBoxContainer = styled('div')(({ theme }) => `
   position: fixed;
@@ -29,4 +31,17 @@ export const TextArea = styled(TextareaAutosize)`
   border-radius: 4px;
   padding: 8px 4px;
   outline: none;
+`;
+
+export const bouncing = keyframes`
+  from {
+    transform: scale(0.9); 
+  }
+  to { 
+    transform: scale(1.1);
+  }
+`;
+
+export const RecordingIcon = styled(MicIcon)`
+  animation: ${bouncing} 300ms infinite alternate;
 `;

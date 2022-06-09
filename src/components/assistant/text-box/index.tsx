@@ -1,24 +1,19 @@
-import { ChangeEvent, ChangeEventHandler, FC, useRef, useState } from 'react';
+import { FC } from 'react';
 import { useAssistant } from '../AssistantContext';
-import SendIcon from '@mui/icons-material/Send';
-import { TextArea, TextBoxContainer } from './styles';
 import { IconButton } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+import MicIcon from '@mui/icons-material/Mic';
+
+import { RecordingIcon, TextArea, TextBoxContainer } from './styles';
 
 const TextBox: FC = () => {
-  const [text, setText] = useState('');
-  const { sendSpeech } = useAssistant();
-  const textRef = useRef<HTMLTextAreaElement>(null);
-
-  const submitText = () => {
-    if (!text) return;
-    
-    sendSpeech(text);
-    setText('');
-    textRef?.current?.focus();
-  }
+  const {
+    submitText, textRef, text, setText, supportedListening, listen, stop,
+    listening,
+  } = useAssistant();
 
   const handleChange = ({ target, nativeEvent }: any) => {
-    if (nativeEvent.inputType === 'insertLineBreak') 
+    if (nativeEvent.inputType === 'insertLineBreak')
       return submitText();
     setText(target.value);
   }
@@ -32,9 +27,19 @@ const TextBox: FC = () => {
         onChange={handleChange}
       />
 
-      <IconButton onClick={submitText}>
-        <SendIcon />
-      </IconButton>
+      {(text && !listening) || !supportedListening ? (
+        <IconButton onClick={submitText}>
+          <SendIcon />
+        </IconButton>
+      ) : (
+        <IconButton
+          onClick={listen}
+          color={listening ? 'primary' : 'default'}
+        >
+          {listening ? <RecordingIcon /> : <MicIcon />}
+        </IconButton>
+      )}
+
     </TextBoxContainer>
   );
 }
