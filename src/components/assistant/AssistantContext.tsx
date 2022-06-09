@@ -60,7 +60,11 @@ export const AssistantProvider: FC<{ children: JSX.Element }> = ({ children }) =
     onResult: setText,
     onEnd: submitText,
   });
-  const listen = () => !listening && listentHook({ lang: 'pt-BR' });
+  const listen = () => {
+    if(listening) return; 
+    cancel();
+    listentHook({ lang: 'pt-BR' });
+  }
 
   useEffect(() => {
     if (!listening) return;
@@ -124,7 +128,7 @@ export const AssistantProvider: FC<{ children: JSX.Element }> = ({ children }) =
     const start = generalIntents
       .find((i) => i.name === 'start') as IntentInterface;
     const messages = [pickAnswer(start)];
-
+    
     const unsuported = generalIntents
       .find((i) => i.name === 'unsuported') as IntentInterface;
     if (!supported) messages.push(pickAnswer(unsuported));
