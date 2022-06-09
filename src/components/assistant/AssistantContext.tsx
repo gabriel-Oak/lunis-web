@@ -32,13 +32,19 @@ export const AssistantContext = createContext(null as unknown as AssistantProps)
 export const AssistantProvider: FC<{ children: JSX.Element }> = ({ children }) => {
   const [isStarted, setIsStarted] = useState(false);
   const [text, setText] = useState('');
+  const [responsePath, setResponsePath] = useState('');
   const [entries, setEntries] = useState([] as ChatMessage[]);
   const [loadingSpeech, setLoadingSpeech] = useState(false);
   const [recognitionTimeout, setRecognitionTimeout] = useState<NodeJS.Timeout>();
 
   const containerRef = useRef(null as unknown as HTMLDivElement);
   const textRef = useRef(null as unknown as HTMLTextAreaElement);
-  const { speak, voices, cancel, supported } = useSpeechSynthesis();
+  const { speak, voices, cancel, supported , speaking } = useSpeechSynthesis();
+  const voice = useMemo(
+    () => voices
+      .find((voice: any) => voice.lang === 'pt-BR') as SpeechSynthesisVoice,
+    [voices],
+  );  
 
   const submitText = () => {
     if (!text) return;
@@ -54,15 +60,17 @@ export const AssistantProvider: FC<{ children: JSX.Element }> = ({ children }) =
     onResult: setText,
     onEnd: submitText,
   });
+  const listen = () => !listening && listentHook({ lang: 'pt-BR' });
 
   useEffect(() => {
     if (!listening) return;
-
     clearTimeout(recognitionTimeout);
     setRecognitionTimeout(setTimeout(() => stop(), 1000));
   }, [text]);
 
-  const listen = () => listentHook({ lang: 'pt-BR' });
+  useEffect(() => {
+    if (responsePath && !speaking) listen();
+  }, [speaking, responsePath]);
 
   const scrollChat = () => {
     const { current } = containerRef;
@@ -72,35 +80,41 @@ export const AssistantProvider: FC<{ children: JSX.Element }> = ({ children }) =
     current.scrollBy({ behavior: 'smooth', top: scrollDistance });
   }
 
-  const voice = useMemo(
-    () => voices
-      .find((voice: any) => voice.lang === 'pt-BR') as SpeechSynthesisVoice,
-    [voices],
-  );
-
-  const synthesisSpeak = (
+  const synthesisSpeak = ({
+    messages,
+    oldEntries,
+    path = '',
+    isError,
+  }: {
     messages: string[],
     oldEntries: ChatMessage[],
+    path?: string,
     isError?: boolean,
-  ) => {
+  }) => {
     setEntries(oldEntries.concat([{ messages, author: 'assistant', isError }]));
+    setResponsePath(path);
     messages
       .forEach((message) => speak({ text: message, voice, }));
   }
 
   const sendSpeech = async (speech: string) => {
-    const newEntries = Array.from(entries);
-    newEntries.push({ messages: [speech], author: 'user' });
+    const oldEntries = Array.from(entries);
+    oldEntries.push({ messages: [speech], author: 'user' });
 
-    setEntries(newEntries);
+    setEntries(oldEntries);
     setLoadingSpeech(true);
 
     try {
-      const { messages } = await postSpeech(speech);
+      const { messages, path } = await postSpeech({ speech, path: responsePath });
       cancel();
-      synthesisSpeak(messages, newEntries);
+      synthesisSpeak({ messages, oldEntries, path });
     } catch (error: any) {
-      synthesisSpeak(error.messages, newEntries, true);
+      if (error.messages) synthesisSpeak({
+        messages: error.messages,
+        oldEntries,
+        isError: true,
+        path: error.path
+      });
     }
     setLoadingSpeech(false);
   }
@@ -119,7 +133,7 @@ export const AssistantProvider: FC<{ children: JSX.Element }> = ({ children }) =
       .find((i) => i.name === 'unsuported-listening') as IntentInterface;
     if (!supportedListening) messages.push(pickAnswer(unsuportedListening));
 
-    synthesisSpeak(messages, entries);
+    synthesisSpeak({ messages, oldEntries: entries });
   }
 
   return (

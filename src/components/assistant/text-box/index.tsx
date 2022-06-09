@@ -8,8 +8,7 @@ import { RecordingIcon, TextArea, TextBoxContainer } from './styles';
 
 const TextBox: FC = () => {
   const {
-    submitText, textRef, text, setText, supportedListening, listen, stop,
-    listening,
+    submitText, textRef, text, setText, supportedListening, listen, listening,
   } = useAssistant();
 
   const handleChange = ({ target, nativeEvent }: any) => {

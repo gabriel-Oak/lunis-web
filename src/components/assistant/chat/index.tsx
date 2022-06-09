@@ -4,8 +4,7 @@ import TextBox from '../text-box';
 import { ChantContainer, DialogueContainer, ParagraphContainer, Row } from './styles';
 
 const Chat: FC = () => {
-  const { entries, containerRef, scrollChat } = useAssistant();
-
+  const { entries, containerRef, scrollChat } = useAssistant();  
   useLayoutEffect(scrollChat, [entries]);
 
   return (
@@ -14,7 +13,10 @@ const Chat: FC = () => {
     >
       {entries.map((entry, index) => (
         <Row isUser={entry.author === 'user'} key={index}>
-          <DialogueContainer isUser={entry.author === 'user'}>
+          <DialogueContainer 
+            isError={entry.isError} 
+            isUser={entry.author === 'user'}
+          >
             {entry.messages.map((speech, i) => (
               <ParagraphContainer key={i}>
                 {speech}
